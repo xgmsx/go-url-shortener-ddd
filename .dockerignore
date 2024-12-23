@@ -1,0 +1,11 @@
+.github
+configs
+deployments
+migrations
+proto
+.gitignore
+.gitlab-ci.yml
+.golangci.yml
+docker-compose.yml
+Makefile
+README.md

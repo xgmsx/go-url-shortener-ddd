@@ -1,0 +1,135 @@
+basePath: /api
+definitions:
+  dto.CreateLinkInput:
+    properties:
+      url:
+        type: string
+    type: object
+  dto.CreateLinkOutput:
+    properties:
+      alias:
+        type: string
+      expired_at:
+        type: string
+      url:
+        type: string
+    type: object
+  dto.GetLinkOutput:
+    properties:
+      alias:
+        type: string
+      expired_at:
+        type: string
+      url:
+        type: string
+    type: object
+  http.ErrHTTP:
+    properties:
+      error:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Title
+  version: 0.0.0
+paths:
+  /shortener/v1/link:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New link
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateLinkInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateLinkOutput'
+        "302":
+          description: Found
+          schema:
+            $ref: '#/definitions/dto.CreateLinkOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+      summary: Create a short link
+      tags:
+      - Links
+  /shortener/v1/link/{alias}:
+    get:
+      consumes:
+      - text/plain
+      parameters:
+      - description: Link alias
+        in: path
+        name: alias
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetLinkOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+      summary: Get a short link by alias
+      tags:
+      - Links
+  /shortener/v1/link/{alias}/redirect:
+    get:
+      consumes:
+      - text/plain
+      parameters:
+      - description: Link alias
+        in: path
+        name: alias
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "302":
+          description: redirect to the original url
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrHTTP'
+      summary: Redirect to URL by alias
+      tags:
+      - Links
+swagger: "2.0"
