@@ -1,15 +1,15 @@
-package http_router
+package http_router //nolint:stylecheck
 
 import (
 	"errors"
 
-	"url-shortener/internal/shortener/dto"
-	"url-shortener/internal/shortener/entity"
-	_ "url-shortener/pkg/http"
-	"url-shortener/pkg/observability/otel/tracer"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	_ "github.com/xgmsx/go-url-shortener-ddd/pkg/http"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 // createLink handler
@@ -69,7 +69,7 @@ func (r Router) createLink(c *fiber.Ctx) error {
 // @Failure 404 {object} http.ErrHTTP
 // @Failure 500 {object} http.ErrHTTP
 // @Router /shortener/v1/link/{alias} [get]
-func (r Router) getLink(c *fiber.Ctx) (err error) {
+func (r Router) getLink(c *fiber.Ctx) error {
 	ctx, span := tracer.Start(c.Context(), "http/v1 GetLink")
 	defer span.End()
 
@@ -108,7 +108,7 @@ func (r Router) getLink(c *fiber.Ctx) (err error) {
 // @Failure      404 {object} http.ErrHTTP
 // @Failure      500 {object} http.ErrHTTP
 // @Router       /shortener/v1/link/{alias}/redirect [get]
-func (r Router) redirect(c *fiber.Ctx) (err error) {
+func (r Router) redirect(c *fiber.Ctx) error {
 	ctx, span := tracer.Start(c.Context(), "http/v1 Redirect")
 	defer span.End()
 

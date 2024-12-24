@@ -6,9 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-const readTimeout = 5 * time.Second
-const writeTimeout = 5 * time.Second
-const closeTimeout = 5 * time.Second
+const (
+	readTimeout  = 5 * time.Second
+	writeTimeout = 5 * time.Second
+	closeTimeout = 5 * time.Second
+)
 
 type Option func(*Options)
 
@@ -27,7 +29,7 @@ type Options struct {
 }
 
 func BuildOptions(c Config, opts ...Option) *Options {
-	var o = &Options{
+	o := &Options{
 		Name:         c.AppName,
 		Port:         c.Port,
 		ReadTimeout:  readTimeout,

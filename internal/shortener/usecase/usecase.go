@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"url-shortener/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
 )
 
 const linkTTL = 24 * time.Hour

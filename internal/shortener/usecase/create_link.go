@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
-	"url-shortener/internal/shortener/dto"
-	"url-shortener/internal/shortener/entity"
-	"url-shortener/pkg/observability/otel/tracer"
-
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 func (u *UseCase) CreateLink(ctx context.Context, input dto.CreateLinkInput) (dto.CreateLinkOutput, error) {

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"time"
 
-	"url-shortener/internal/shortener/entity"
-	"url-shortener/pkg/observability/otel/tracer"
-
 	"github.com/redis/go-redis/v9"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 const ttl = time.Hour

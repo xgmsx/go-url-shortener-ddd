@@ -14,7 +14,7 @@ type Writer struct {
 	*kafka.Writer
 }
 
-func New(c Config) (*Writer, error) {
+func New(c *Config) (*Writer, error) {
 	w := &kafka.Writer{
 		Addr:     kafka.TCP(c.Addr...),
 		Topic:    c.Topic,

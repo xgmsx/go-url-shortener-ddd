@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"url-shortener/internal/shortener/dto"
-	"url-shortener/internal/shortener/entity"
-	"url-shortener/pkg/observability/otel/tracer"
-
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 func (u *UseCase) GetLink(ctx context.Context, input dto.GetLinkInput) (dto.GetLinkOutput, error) {

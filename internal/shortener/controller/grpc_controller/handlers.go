@@ -1,24 +1,24 @@
-package grpc_controller
+package grpc_controller //nolint:stylecheck
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"google.golang.org/protobuf/types/known/timestamppb"
-
-	pb "url-shortener/generated/protobuf/shortener.v1"
-	"url-shortener/internal/shortener/dto"
-	"url-shortener/internal/shortener/entity"
-	"url-shortener/pkg/observability/otel/tracer"
 
 	"github.com/rs/zerolog/log"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
+	pb "github.com/xgmsx/go-url-shortener-ddd/generated/protobuf/shortener.v1"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 func (c Controller) CreateLink(ctx context.Context, req *pb.CreateLinkRequest) (*pb.CreateLinkResponse, error) {
 	ctx, span := tracer.Start(ctx, "grpc/v1 CreateLink")
 	defer span.End()
 
-	var input = dto.CreateLinkInput{URL: req.GetUrl()}
+	input := dto.CreateLinkInput{URL: req.GetUrl()}
 	if err := input.Validate(); err != nil {
 		log.Error().Err(err).Msg("uc.CreateLink: validate error")
 		return nil, err
@@ -53,7 +53,7 @@ func (c Controller) GetLink(ctx context.Context, req *pb.GetLinkRequest) (*pb.Ge
 	ctx, span := tracer.Start(ctx, "grpc/v1 GetLink")
 	defer span.End()
 
-	var input = dto.GetLinkInput{Alias: req.GetAlias()}
+	input := dto.GetLinkInput{Alias: req.GetAlias()}
 	if err := input.Validate(); err != nil {
 		log.Error().Err(err).Msg("uc.GetLink: validate error")
 		return nil, err

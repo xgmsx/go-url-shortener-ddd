@@ -3,6 +3,9 @@ package otel
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -12,26 +15,21 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.27.0"
 	tracer_noop "go.opentelemetry.io/otel/trace/noop"
-	"time"
 
-	"url-shortener/pkg/observability/otel/tracer"
-
-	"github.com/rs/zerolog/log"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 const closeTimeout = 5 * time.Second
 
 type Config struct {
 	Endpoint     string  `env:"OTEL_ENDPOINT"`
-	EndpointHttp string  `env:"OTEL_ENDPOINT_HTTP"`
+	EndpointHTTP string  `env:"OTEL_ENDPOINT_HTTP"`
 	Namespace    string  `env:"OTEL_NAMESPACE"`
 	InstanceID   string  `env:"OTEL_INSTANCE_ID"`
 	Ratio        float64 `env:"OTEL_RATIO, default=1.0"`
 }
 
-var (
-	shutdownTracing func(ctx context.Context) error
-)
+var shutdownTracing func(ctx context.Context) error
 
 func Init(ctx context.Context, c Config, name, version string) error {
 	otel.SetTextMapPropagator(
@@ -51,7 +49,7 @@ func Init(ctx context.Context, c Config, name, version string) error {
 		if err != nil {
 			return fmt.Errorf("failed to create OTLP trace exporter (GRPC): %w", err)
 		}
-	case c.EndpointHttp != "":
+	case c.EndpointHTTP != "":
 		exporter, err = otlptracehttp.New(ctx,
 			otlptracehttp.WithEndpoint(c.Endpoint),
 			otlptracehttp.WithInsecure())

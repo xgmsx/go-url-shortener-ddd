@@ -1,4 +1,4 @@
-module url-shortener
+module github.com/xgmsx/go-url-shortener-ddd
 
 go 1.22.7
 
@@ -13,7 +13,6 @@ require (
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/rs/zerolog v1.33.0
-	github.com/samber/slog-fiber v1.16.5
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/sethvargo/go-envconfig v1.1.0
 	github.com/swaggo/swag v1.16.4

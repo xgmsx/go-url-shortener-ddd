@@ -1,0 +1,32 @@
+name: golangci-lint
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths: ['**.go']
+  push:
+    branches: [ "main" ]
+    paths: ['**.go']
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  GO_VERSION: 1.22
+  GOLANGCI_LINT_VERSION: v1.62
+
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: golangci-lint ${{ matrix.modules }}
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          args: --timeout=10m --config=.golangci.yml
