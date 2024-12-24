@@ -1,10 +1,10 @@
 package http
 
 import (
-	"url-shortener/docs"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/docs"
 )
 
 type Config struct {

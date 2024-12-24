@@ -1,9 +1,9 @@
-package http_router
+package http_router //nolint:stylecheck
 
 import (
-	"url-shortener/internal/shortener/usecase"
-
 	"github.com/gofiber/fiber/v2"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/usecase"
 )
 
 type Router struct {

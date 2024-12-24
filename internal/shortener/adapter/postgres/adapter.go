@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
-	"url-shortener/internal/shortener/entity"
-	"url-shortener/pkg/observability/otel/tracer"
-
 	"github.com/doug-martin/goqu/v9"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 type Postgres struct {

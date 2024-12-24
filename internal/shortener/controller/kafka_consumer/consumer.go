@@ -1,14 +1,14 @@
-package kafka_consumer
+package kafka_consumer //nolint:stylecheck
 
 import (
 	"context"
 	"encoding/json"
 
-	"url-shortener/internal/shortener/dto"
-	"url-shortener/internal/shortener/usecase"
-	kafkaReader "url-shortener/pkg/kafka/reader"
-
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/usecase"
+	kafkaReader "github.com/xgmsx/go-url-shortener-ddd/pkg/kafka/reader"
 )
 
 type Consumer struct {

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"url-shortener/internal/shortener/entity"
-
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
 )
 
 type CreateLinkInput struct {

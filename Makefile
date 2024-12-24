@@ -65,13 +65,18 @@ cov: ## ☔ Generate a coverage report
 
 .PHONY: fmt
 fmt: ## 🎨 Fix code format issues
-	go fmt ./...
-	sort-imports ./...
+	gofumpt -w .
+	goimports -w -local github.com/xgmsx/go-url-shortener .
 
 .PHONY: lint
 lint: ## 🚨 Run lint checks
-	golangci-lint run --timeout 5m
-	gocritic check -enableAll ./...
+	golangci-lint run --fix ./...
+
+.PHONY: lint-install
+lint-install:
+	go install mvdan.cc/gofumpt@latest
+	go install golang.org/x/tools/cmd/goimports@latest
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 ## Building, running, escape analysis
 

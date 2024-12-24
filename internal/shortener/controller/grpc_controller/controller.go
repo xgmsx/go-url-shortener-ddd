@@ -1,10 +1,10 @@
-package grpc_controller
+package grpc_controller //nolint:stylecheck
 
 import (
 	"google.golang.org/grpc"
 
-	pb "url-shortener/generated/protobuf/shortener.v1"
-	"url-shortener/internal/shortener/usecase"
+	pb "github.com/xgmsx/go-url-shortener-ddd/generated/protobuf/shortener.v1"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/usecase"
 )
 
 type Controller struct {

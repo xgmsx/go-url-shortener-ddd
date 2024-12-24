@@ -3,17 +3,17 @@ package config
 import (
 	"context"
 
-	"url-shortener/pkg/grpc"
-	"url-shortener/pkg/http"
-	"url-shortener/pkg/kafka/reader"
-	"url-shortener/pkg/kafka/writer"
-	"url-shortener/pkg/logger"
-	"url-shortener/pkg/observability/otel"
-	"url-shortener/pkg/observability/sentry"
-	"url-shortener/pkg/postgres"
-	"url-shortener/pkg/redis"
-
 	"github.com/sethvargo/go-envconfig"
+
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/grpc"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/http"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/kafka/reader"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/kafka/writer"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/logger"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/sentry"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/postgres"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/redis"
 )
 
 type App struct {
@@ -38,11 +38,11 @@ type Config struct {
 	GRPC grpc.Config
 }
 
-func New() (Config, error) {
+func New() (*Config, error) {
 	var cfg Config
-	var err = envconfig.Process(context.Background(), &cfg)
+	err := envconfig.Process(context.Background(), &cfg)
 	if err != nil {
-		return Config{}, err
+		return &cfg, err
 	}
-	return cfg, nil
+	return &cfg, nil
 }

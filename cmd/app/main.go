@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
-	_ "go.uber.org/automaxprocs"
-
-	"url-shortener/internal/app"
-	"url-shortener/internal/config"
-	"url-shortener/pkg/logger"
-	"url-shortener/pkg/observability/otel"
-	"url-shortener/pkg/observability/sentry"
 
 	"github.com/rs/zerolog/log"
+	_ "go.uber.org/automaxprocs"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/app"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/config"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/logger"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/sentry"
 )
 
 func main() {

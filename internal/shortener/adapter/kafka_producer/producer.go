@@ -1,4 +1,4 @@
-package kafka_producer
+package kafka_producer //nolint:stylecheck
 
 import "github.com/segmentio/kafka-go"
 

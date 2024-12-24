@@ -14,6 +14,6 @@ func (r DefaultRouter) Register(prefix string, app *fiber.App) {
 	router.Get("/swagger/*", swagger.HandlerDefault)
 }
 
-func (r DefaultRouter) probe(c *fiber.Ctx) error {
+func (DefaultRouter) probe(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }

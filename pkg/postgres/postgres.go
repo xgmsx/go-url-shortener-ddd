@@ -20,7 +20,7 @@ type Pool struct {
 	*pgxpool.Pool
 }
 
-func New(ctx context.Context, c Config) (*Pool, error) {
+func New(ctx context.Context, c *Config) (*Pool, error) {
 	dsn := fmt.Sprintf("user=%s password=%s port=%s host=%s dbname=%s",
 		c.User, c.Password, c.Port, c.Host, c.DBName)
 

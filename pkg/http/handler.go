@@ -13,9 +13,7 @@ type ErrHTTP struct {
 func DefaultErrorHandler(c *fiber.Ctx, err error) error {
 	if e, ok := err.(*fiber.Error); ok {
 		return c.Status(e.Code).JSON(ErrHTTP{Error: e.Message})
-	} else {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrHTTP{
-			Error: http.StatusText(fiber.StatusInternalServerError),
-		})
 	}
+	return c.Status(fiber.StatusInternalServerError).JSON(
+		ErrHTTP{Error: http.StatusText(fiber.StatusInternalServerError)})
 }

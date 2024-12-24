@@ -1,13 +1,13 @@
-package kafka_producer
+package kafka_producer //nolint:stylecheck
 
 import (
 	"context"
 	"fmt"
 
-	"url-shortener/internal/shortener/entity"
-	"url-shortener/pkg/observability/otel/tracer"
-
 	"github.com/segmentio/kafka-go"
+
+	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
 func (p *Producer) CreateEvent(ctx context.Context, l entity.Link) error {
@@ -18,7 +18,6 @@ func (p *Producer) CreateEvent(ctx context.Context, l entity.Link) error {
 		Key:   []byte(l.Alias),
 		Value: []byte(l.URL),
 	})
-
 	if err != nil {
 		return fmt.Errorf("p.writer.WriteMessages: %w", err)
 	}

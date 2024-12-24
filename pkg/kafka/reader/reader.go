@@ -15,7 +15,7 @@ type Reader struct {
 	*kafka.Reader
 }
 
-func New(c Config) (*Reader, error) {
+func New(c *Config) (*Reader, error) {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  c.Addr,
 		GroupID:  c.Group,

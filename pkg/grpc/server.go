@@ -1,11 +1,12 @@
 package grpc
 
 import (
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"net"
 
 	"github.com/rs/zerolog/log"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type Registrable interface {
