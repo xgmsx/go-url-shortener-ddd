@@ -8,9 +8,12 @@ import (
 )
 
 type Config struct {
-	Port       string `env:"HTTP_PORT, default=8000"`
-	AppName    string `env:"APP_NAME, required"`
-	AppVersion string `env:"APP_VERSION, required"`
+	AppName      string `env:"APP_NAME, required"`
+	AppVersion   string `env:"APP_VERSION, required"`
+	Port         string `env:"HTTP_PORT, default=8000"`
+	UseRecover   bool   `env:"HTTP_USE_RECOVER, default=true"`
+	UseRequestID bool   `env:"HTTP_USE_REQUEST_ID, default=true"`
+	UsePprof     bool   `env:"HTTP_USE_PPROF, default=false"`
 }
 
 // Server HTTP.

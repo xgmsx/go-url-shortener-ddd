@@ -74,14 +74,26 @@ func WithWriteTimeout(d time.Duration) Option {
 	}
 }
 
-func WithRouter(prefix string, router Registrable) Option {
+func WithRouter(prefix string, router Registrable, conditions ...bool) Option {
 	return func(options *Options) {
+		for _, v := range conditions {
+			if !v {
+				return
+			}
+		}
+
 		options.Routers = append(options.Routers, map[string]Registrable{prefix: router})
 	}
 }
 
-func WithMiddleware(m fiber.Handler) Option {
+func WithMiddleware(m fiber.Handler, conditions ...bool) Option {
 	return func(options *Options) {
+		for _, v := range conditions {
+			if !v {
+				return
+			}
+		}
+
 		options.Middlewares = append(options.Middlewares, m)
 	}
 }

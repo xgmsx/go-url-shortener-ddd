@@ -1,8 +1,6 @@
 module github.com/xgmsx/go-url-shortener-ddd
 
-go 1.22.7
-
-toolchain go1.23.4
+go 1.22.9
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0

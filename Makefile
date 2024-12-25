@@ -50,33 +50,20 @@ down: ## 🐳🔽 Stop Docker containers with docker-compose
 
 ## Tests, linting, generation
 
-.PHONY: generate
-generate: ## Generate artifacts
-	@echo "* Running proto-generate..."
-	$(MAKE) proto-generate
-	@echo "* Running openapi-generate..."
-	$(MAKE) openapi-generate
-
-.PHONY: cov
-cov: ## ☔ Generate a coverage report
-	go test -cover -coverprofile=coverage.txt ./...
-	go tool cover -html=coverage.txt -o coverage.html
-	go tool cover -func=coverage.txt
-
-.PHONY: fmt
-fmt: ## 🎨 Fix code format issues
-	gofumpt -w .
-	goimports -w -local github.com/xgmsx/go-url-shortener .
-
-.PHONY: lint
-lint: ## 🚨 Run lint checks
-	golangci-lint run --fix ./...
-
 .PHONY: lint-install
 lint-install:
 	go install mvdan.cc/gofumpt@latest
 	go install golang.org/x/tools/cmd/goimports@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+.PHONY: lint
+lint: ## 🚨 Run lint checks
+	golangci-lint run --fix ./...
+
+.PHONY: fmt
+fmt: ## 🎨 Fix code format issues
+	gofumpt -w .
+	goimports -w -local github.com/xgmsx/go-url-shortener .
 
 ## Building, running, escape analysis
 
@@ -92,7 +79,20 @@ run: ## 🚶 Run the program
 rune: ## 🔎 Run the program with escape analysis
 	go run -gcflags='-m=3' ./cmd/app
 
+.PHONY: generate
+generate: ## Generate artifacts
+	@echo "* Running proto-generate..."
+	$(MAKE) proto-generate
+	@echo "* Running openapi-generate..."
+	$(MAKE) openapi-generate
+
 ## Tests, tests, tests...
+
+.PHONY: cov
+cov: ## ☔ Generate a coverage report
+	go test -cover -coverprofile=coverage.txt ./...
+	go tool cover -html=coverage.txt -o coverage.html
+	go tool cover -func=coverage.txt
 
 .PHONY: test
 test: ## 🚦 Execute unittests
@@ -107,11 +107,19 @@ test-msan: ## 🚦🧼 Execute tests with the memory sanitizer
 	go test -msan -short ./...
 
 .PHONY: test-bench
-test-bench: ## 📈 Execute benchmark tests
+test-bench: ## 🚦 Execute benchmark tests
 	go test -bench=. ./...
 
 ## Pprof
 
-.PHONY: pprof
-pprof: ## 📈 Show pprof report
+.PHONY: pprof-allocs
+pprof-allocs: ## 📈 Show pprof memory allocation report
 	go tool pprof -http=:8001 http://localhost:8000/debug/pprof/allocs?debug=1
+
+.PHONY: pprof-heap
+pprof-heap: ## 📈 Show pprof memory heap report
+	go tool pprof -http=:8002 http://localhost:8000/debug/pprof/heap?debug=1
+
+.PHONY: pprof-goroutine
+pprof-goroutine: ## 📈 Show pprof memory heap report
+	go tool pprof -http=:8003 http://localhost:8000/debug/pprof/goroutine?debug=1
