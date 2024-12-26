@@ -1,0 +1,37 @@
+# Auto-formatting before every commit:
+#
+# ## Preparation:
+# 1. Install tools:
+#    > go install mvdan.cc/gofumpt@latest
+#    > go install golang.org/x/tools/cmd/goimports@latest
+#
+# 2. Install pre-commit:
+#    > brew install pre-commit
+#    > pre-commit install
+#
+# ## Usage:
+# Run all checks:
+#    > pre-commit run --all-files
+# Run specific checks:
+#    > pre-commit run gofumpt --all-files
+#    > pre-commit run goimports --all-files
+#
+# ## Uninstallation:
+# Remove pre-commit hooks:
+#    > pre-commit uninstall
+
+repos:
+  - repo: local
+    hooks:
+
+      - id: gofumpt
+        name: Run gofumpt on changed files
+        entry: gofumpt -w
+        language: system
+        files: \.go$
+
+      - id: goimports
+        name: Run goimports on changed files
+        entry: goimports -w -local github.com/xgmsx/go-url-shortener
+        language: system
+        files: \.go$
