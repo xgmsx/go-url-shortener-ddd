@@ -13,7 +13,7 @@ import (
 	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/sentry"
 )
 
-func main() {
+func run(run func(context.Context, *config.Config) error) {
 	c, err := config.New()
 	if err != nil {
 		log.Fatal().Err(err).Msg("config.New")
@@ -38,8 +38,12 @@ func main() {
 	}
 	defer otel.Close()
 
-	err = app.Run(ctx, c)
+	err = run(ctx, c)
 	if err != nil {
 		log.Error().Err(err).Msg("app.Run")
 	}
+}
+
+func main() {
+	run(app.Run)
 }
