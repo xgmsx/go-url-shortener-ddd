@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "main" ]
 
-permissions:
-  contents: write
-
 env:
   GO_VERSION: 1.22
 
@@ -16,6 +13,9 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
+    permissions:
+      contents: write
 
     steps:
       # tests
@@ -44,16 +44,34 @@ jobs:
           git diff --exit-code go.mod
           git diff --exit-code go.sum
 
+      - name: Install gocov-html
+        run: |
+          go install github.com/axw/gocov/gocov@v1
+          go install github.com/matm/gocov-html/cmd/gocov-html@v1
+
       - name: Run tests
         run: |
+          mkdir -p .github_pages
           go test ./... -coverprofile=coverage.out -covermode=atomic -coverpkg=./...
-          go tool cover -func=coverage.out -o=coverage.out
+          go tool cover -func=coverage.out -o=cover.out
+          gocov convert coverage.out | gocov-html > .github_pages/index.html
+
+      # pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact for Pages
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .github_pages/
 
       # badge
       - name: Update coverage Badge
         uses: tj-actions/coverage-badge-go@v2
         with:
-          filename: coverage.out
+          filename: cover.out
+          link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
 
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v12
@@ -75,3 +93,21 @@ jobs:
         with:
           github_token: ${{ github.token }}
           branch: ${{ github.ref_name }}
+
+  deploy-coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy coverage report to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
