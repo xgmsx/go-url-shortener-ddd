@@ -15,6 +15,15 @@
 - **Метрики (observability)**: Данные метрик входящих запросов отправляются в Prometheus для анализа производительности сервиса в Grafana.
 - **Логи (observability)**: Информация об ошибках передается в Sentry. Работа сервиса логируется в формате JSON.
 
+<details>
+<summary>Table of Contents</summary>
+
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Usage](#usage)
+- [Environment variables](#environment-variables)
+</details>
+
 ## Installation
 
 <div class="termy">
@@ -190,3 +199,14 @@ $ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 sh
 В топике [links-created](http://localhost:8383/ui/clusters/local/all-topics/links-created) содержатся информация о всех созданных коротких ссылках.
 
 Сервис получает сообщения из [links-requested](http://localhost:8383/ui/clusters/local/all-topics/links-requested) и автоматически создает короткую ссылку при получении нового сообщения.
+
+## Environment variables
+
+| Name                  | Type   | Expected | Default       | Description                              |
+|-----------------------|--------|----------|---------------|------------------------------------------|
+| APP_NAME              | string |          | url-shortener | service name                             |
+| APP_VERSION           | string |          | 0.0.0         | service version                          |
+| APP_ENV               | string |          | DEV           | service environment (DEV, PROD, etc)     |
+| LOGGER_LEVEL          | string |          | error         | logging level (debug, info, warn, error) |
+| LOGGER_PRETTY_CONSOLE | bool   |          | false         | logging format (text/json)               |
+| SENTRY_DSN            | string |          |               | sentry DSN (disabled if empty)           |
