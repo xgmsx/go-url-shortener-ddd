@@ -51,7 +51,7 @@ func Init(ctx context.Context, c Config, name, version string) error {
 		}
 	case c.EndpointHTTP != "":
 		exporter, err = otlptracehttp.New(ctx,
-			otlptracehttp.WithEndpoint(c.Endpoint),
+			otlptracehttp.WithEndpoint(c.EndpointHTTP),
 			otlptracehttp.WithInsecure())
 		if err != nil {
 			return fmt.Errorf("failed to create OTLP trace exporter (HTTP): %w", err)

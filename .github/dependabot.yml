@@ -1,6 +1,15 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
+    open-pull-requests-limit: 10
     directory: "/"
+
     schedule:
       interval: "monthly"
+
+    labels:
+    - Dependencies
+
+    commit-message:
+      prefix: chore
+      prefix-development: chore

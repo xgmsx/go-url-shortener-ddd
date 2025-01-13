@@ -70,6 +70,8 @@ jobs:
       - name: Update coverage Badge
         uses: tj-actions/coverage-badge-go@v2
         with:
+          text: coverage_report
+          target: README.md
           filename: cover.out
           link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
 

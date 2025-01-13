@@ -105,6 +105,7 @@ services:
     image: grafana/grafana:latest
     volumes:
       - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./configs/grafana/dashboards:/etc/grafana/provisioning/dashboards
       - grafana_volume:/var/lib/grafana
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true

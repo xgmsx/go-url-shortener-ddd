@@ -2,11 +2,25 @@
 
 [![Lint status](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml)
 [![Test status](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml)
-[![Coverage](https://img.shields.io/badge/Coverage-16.5%25-red)](https://xgmsx.github.io/go-url-shortener-ddd)
+[![coverage_report](https://img.shields.io/badge/coverage_report-30.8%25-yellow)](https://xgmsx.github.io/go-url-shortener-ddd)
 
 **go-url-shortener-ddd** — это сокращатель ссылок на Go, реализованный с использованием архитектурного подхода Domain-Driven Design (DDD).
 
-Возможности:
+Структура:
+* [internal](internal) содержит пакеты относящиеся к проекту - app, config, shortener.
+* [pkg](pkg) содержит универсальные пакеты, которые можно переиспользовать - logger, http-сервер, клиенты к postgres, redis, kafka и т.д. 
+
+Table of Contents:
+- [Features](#features)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Usage](#usage)
+- [Metrics](#metrics)
+- [Traces](#traces)
+- [Environment variables](#environment-variables)
+
+## Features
+
 - **Поддержка протоколов**: HTTP и gRPC интерфейсы для взаимодействия с сервисом.
 - **Интеграция с Kafka**: Отправка и получение сообщений в kafka для взаимодействия с сервисом.
 - **Хранение данных**: Данные о созданных ссылках хранятся в Postgres SQL.
@@ -14,15 +28,6 @@
 - **Трассировки (observability)**: Данные трейсов входящих запросов отправляются в Jaeger для анализа производительности распределенных систем.
 - **Метрики (observability)**: Данные метрик входящих запросов отправляются в Prometheus для анализа производительности сервиса в Grafana.
 - **Логи (observability)**: Информация об ошибках передается в Sentry. Работа сервиса логируется в формате JSON.
-
-<details>
-<summary>Table of Contents</summary>
-
-- [Installation](#installation)
-- [Quick start](#quick-start)
-- [Usage](#usage)
-- [Environment variables](#environment-variables)
-</details>
 
 ## Installation
 
@@ -113,7 +118,7 @@ migrate -database "postgres://login:pass@localhost:5432/app-db?sslmode=disable" 
 
 #### HTTP-запросы
 
-**Note**: Выполнять запросы можно через веб-интерфейс http://localhost:8000/swagger
+**Note**: Выполнять запросы можно в веб-интерфейсе http://localhost:8000/swagger
 
 Установка утилиты `curl`:
 ```shell
@@ -140,7 +145,7 @@ curl -X 'POST' \
 # {"url":"https://google.com","alias":"IFIYr0OGRKeqF9jPUIbwww","expired_at":"2025-01-02T12:00:00.000000000Z"}
 ```
 
-Получение короткой ссылки:
+Получение полной ссылки:
 ```shell
 curl -X 'GET' \
   'http://localhost:8000/api/shortener/v1/link/IFIYr0OGRKeqF9jPUIbwww' \
@@ -172,14 +177,14 @@ $ brew install grpcurl
 $ scoop install grpcurl
 ```
 
-Создание короткой ссылки:
+Создание новой короткой ссылки:
 ```shell
 $ grpcurl -d '{"url": "https://google.com"}' -plaintext localhost:50051 shortener_v1.Shortener/CreateLink
 
 # {"url": "https://google.com", "alias": "IFIYr0OGRKeqF9jPUIbwww", "expired_at": "2025-01-02T12:00:00.000000000Z"}
 ```
 
-Получение короткой ссылки:
+Получение полной ссылки:
 ```shell
 $ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 shortener_v1.Shortener/GetLink
 
@@ -188,7 +193,7 @@ $ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 sh
 
 #### Redis UI
 
-Текущее содержимое cache в Redis можно посмотреть через web-интерфейс http://localhost:8081
+Текущее содержимое cache в Redis можно посмотреть через веб-интерфейс http://localhost:8081
 ![screen-redis-ui.png](assets/screen-redis-ui.png)
 
 #### Kafka UI
@@ -199,6 +204,20 @@ $ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 sh
 В топике [links-created](http://localhost:8383/ui/clusters/local/all-topics/links-created) содержатся информация о всех созданных коротких ссылках.
 
 Сервис получает сообщения из [links-requested](http://localhost:8383/ui/clusters/local/all-topics/links-requested) и автоматически создает короткую ссылку при получении нового сообщения.
+
+## Metrics
+
+Посмотреть метрики сервиса можно в Grafana: http://localhost:3000/d/golang-metrics-dashboard/golang-metrics
+
+![screen-grafana-dashboard.png](assets/screen-grafana-dashboard.png)
+
+## Traces
+
+Посмотреть трейсы сервиса можно в Jaeger: http://localhost:16686
+
+![screen-jaeger-1.png](assets/screen-jaeger-1.png)
+
+![screen-jaeger-2.png](assets/screen-jaeger-2.png)
 
 ## Environment variables
 
