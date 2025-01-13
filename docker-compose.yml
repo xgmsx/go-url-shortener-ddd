@@ -88,7 +88,6 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui
-    container_name: kafka-ui
     ports:
       - '8383:8383'
     environment:
@@ -100,52 +99,52 @@ services:
     links:
       - kafka
 
-## Observability:
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    volumes:
-#      - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-#      - grafana_volume:/var/lib/grafana
-#    environment:
-#      - GF_AUTH_ANONYMOUS_ENABLED=true
-#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-#      - GF_AUTH_DISABLE_LOGIN_FORM=true
-#      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor traceQLStreaming metricsSummary
-#    ports:
-#      - '3000:3000'
-#
-#  prometheus:
-#    image: prom/prometheus:latest
-#    command:
-#      - --config.file=/etc/prometheus.yaml
-#      - --web.enable-remote-write-receiver
-#      - --enable-feature=exemplar-storage
-#    volumes:
-#      - ./configs/grafana/prometheus.yaml:/etc/prometheus.yaml
-#    ports:
-#      - '9090:9090'
-#
-#  #  tempo:
-#  #    image: grafana/tempo:latest
-#  #    command: [ "-config.file=/etc/tempo.yaml" ]
-#  #    volumes:
-#  #      - ./configs/grafana/tempo.yaml:/etc/tempo.yaml
-#  #    ports:
-#  #      - '3200:3200'  # tempo
-#  #      - '4317:4317'  # otlp grpc
-#  #      - '4318:4318'  # otlp http
-#
-#  jaeger:
-#    image: jaegertracing/all-in-one:latest
-#    container_name: jaeger
-#    ports:
-#      - "16686:16686"  # web-ui
-#      - "4317:4317"    # otlp grpc - http://jaeger:4317/v1/traces
-#      - "4318:4318"    # otlp http - http://jaeger:4318/v1/traces
-#    environment:
-#      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-#      - COLLECTOR_OTLP_ENABLED=true
+# Observability:
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana_volume:/var/lib/grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor traceQLStreaming metricsSummary
+    ports:
+      - '3000:3000'
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./configs/grafana/prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - '9090:9090'
+
+  #  tempo:
+  #    image: grafana/tempo:latest
+  #    command: [ "-config.file=/etc/tempo.yaml" ]
+  #    volumes:
+  #      - ./configs/grafana/tempo.yaml:/etc/tempo.yaml
+  #    ports:
+  #      - '3200:3200'  # tempo
+  #      - '4317:4317'  # otlp grpc
+  #      - '4318:4318'  # otlp http
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"  # web-ui
+      - "4317:4317"    # otlp grpc - http://jaeger:4317/v1/traces
+      - "4318:4318"    # otlp http - http://jaeger:4318/v1/traces
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
 
 volumes:
   grafana_volume:

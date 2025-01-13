@@ -38,15 +38,15 @@ proto-generate:
 openapi-generate:
 	swag init --generalInfo ./pkg/http/server.go --parseInternal
 
-## Docker-compose
+## docker compose
 
 .PHONY: up
-up: ## 🐳🔼 Start Docker containers with docker-compose
-	docker-compose up -d --build
+up: ## 🐳🔼 Start docker containers
+	docker compose up -d --build
 
 .PHONY: down
-down: ## 🐳🔽 Stop Docker containers with docker-compose
-	docker-compose down
+down: ## 🐳🔽 Stop docker containers
+	docker compose down
 
 ## Tests, linting, generation
 
