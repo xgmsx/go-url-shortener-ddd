@@ -1,8 +1,9 @@
 # go-url-shortener-ddd
 
-[![Lint status](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml)
-[![Test status](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml)
-[![coverage_report](https://img.shields.io/badge/coverage_report-30.8%25-yellow)](https://xgmsx.github.io/go-url-shortener-ddd)
+[![Linting](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml)
+[![Tests](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml)
+[![CodeQL](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/codeql.yml)
+[![Coverage_Report](https://img.shields.io/badge/Coverage_Report-30.8%25-yellow)](https://xgmsx.github.io/go-url-shortener-ddd)
 
 **go-url-shortener-ddd** — это сокращатель ссылок на Go, реализованный с использованием архитектурного подхода Domain-Driven Design (DDD).
 

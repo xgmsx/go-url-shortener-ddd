@@ -1,4 +1,4 @@
-name: test
+name: "tests"
 
 on:
   push:
@@ -70,7 +70,7 @@ jobs:
       - name: Update coverage Badge
         uses: tj-actions/coverage-badge-go@v2
         with:
-          text: coverage_report
+          text: Coverage_Report
           target: README.md
           filename: cover.out
           link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
@@ -96,7 +96,7 @@ jobs:
           github_token: ${{ github.token }}
           branch: ${{ github.ref_name }}
 
-  deploy-coverage:
+  coverage:
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 10
