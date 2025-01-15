@@ -1,6 +1,0 @@
-stages:
-  - test
-  - build
-  - deploy
-
-# TODO add gitlab jobs
