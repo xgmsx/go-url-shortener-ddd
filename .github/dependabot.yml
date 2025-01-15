@@ -8,7 +8,7 @@ updates:
       interval: "monthly"
 
     labels:
-    - Dependencies
+    - dependencies
 
     commit-message:
       prefix: chore
