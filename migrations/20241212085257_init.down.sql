@@ -1,7 +1,0 @@
-BEGIN;
-
-DROP INDEX IF EXISTS idx_links_url;
-DROP INDEX IF EXISTS idx_links_alias;
-DROP TABLE IF EXISTS links;
-
-COMMIT;
