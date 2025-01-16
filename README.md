@@ -3,7 +3,7 @@
 [![Linting](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/golangci-lint.yml)
 [![Tests](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/coverage.yml)
 [![CodeQL](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/xgmsx/go-url-shortener-ddd/actions/workflows/codeql.yml)
-[![Coverage_Report](https://img.shields.io/badge/Coverage_Report-30.8%25-yellow)](https://xgmsx.github.io/go-url-shortener-ddd)
+[![Coverage_Report](https://img.shields.io/badge/Coverage_Report-42.2%25-yellow)](https://xgmsx.github.io/go-url-shortener-ddd)
 
 **go-url-shortener-ddd** — это сокращатель ссылок на Go, реализованный с использованием архитектурного подхода Domain-Driven Design (DDD).
 
@@ -45,7 +45,21 @@ cd ./configs/.env_localhost_example ./configs/.env_localhost
 
 ## Quick start
 
-#### Запуск сервиса с зависимостями (postgres, redis, kafka, jaeger, prometheus, grafana) в Docker:
+#### Установка инструментов для разработки
+
+```shell
+make install
+```
+
+Проверка работы установленных инструментов: 
+
+```shell
+make generate
+make fmt
+make lint
+```
+
+#### Запуск сервиса с зависимостями (postgres, redis, kafka, jaeger, prometheus, grafana) в Docker
 
 <div class="termy">
 
@@ -56,49 +70,30 @@ $ docker compose up -d --build
  ✔ Container go-url-shortener-ddd-app-1         Started                                                                                                                                                                       0.4s 
  ✔ Container go-url-shortener-ddd-postgres-1    Started                                                                                                                                                                       0.2s 
  ✔ Container go-url-shortener-ddd-redis-1       Started                                                                                                                                                                       0.2s 
- ✔ Container go-url-shortener-ddd-redis-ui-1    Started                                                                                                                                                                       0.2s 
- ✔ Container go-url-shortener-ddd-kafka-1       Started                                                                                                                                                                       0.2s 
- ✔ Container go-url-shortener-ddd-kafka-init-1  Started   
- ✔ Container go-url-shortener-ddd-kafka-ui-1    Started                                                                                                                                                                       0.3s 
+...                                                                                                                                                                     0.3s 
 ```
 
 </div>
 
-#### Локальный запуск сервиса в Linux и MacOS:
+#### Локальный запуск сервиса в Linux и MacOS
 
 <div class="termy">
 
 ```console
+# Linux, MacOS
 $ export $(grep -v '^#' ./configs/.env_localhost | xargs) && go run ./cmd/app
 
-2025/01/01 12:00:00 maxprocs: Leaving GOMAXPROCS=8: CPU quota undefined
-12:00:00 INF Logger initialized
-12:00:00 INF App starting...
-12:00:00 INF Sentry is disabled
-12:00:00 INF Tracer is disabled
-12:00:00 INF HTTP server started on port: 8000
-12:00:00 INF gRPC server started on port: 50051
-12:00:00 INF Kafka consumer started
-12:00:00 INF App started
-```
-
-</div>
-
-#### Локальный запуск сервиса в Windows Git Bash:
-
-```console
+# Windows Git Bash
 $ env $(grep -v '^#' ./configs/.env_localhost | xargs) go run ./cmd/app
 
 2025/01/01 12:00:00 maxprocs: Leaving GOMAXPROCS=8: CPU quota undefined
 12:00:00 INF Logger initialized
 12:00:00 INF App starting...
-12:00:00 INF Sentry is disabled
-12:00:00 INF Tracer is disabled
-12:00:00 INF HTTP server started on port: 8000
-12:00:00 INF gRPC server started on port: 50051
-12:00:00 INF Kafka consumer started
+...
 12:00:00 INF App started
 ```
+
+</div>
 
 ## Usage
 
@@ -187,7 +182,7 @@ $ grpcurl -d '{"url": "https://google.com"}' -plaintext localhost:50051 shortene
 
 Получение полной ссылки:
 ```shell
-$ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 shortener_v1.Shortener/GetLink
+$ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 shortener_v1.Shortener/FetchLink
 
 # {"url": "https://google.com", "alias": "IFIYr0OGRKeqF9jPUIbwww", "expired_at": "2025-01-02T12:00:00.000000000Z"}
 ```

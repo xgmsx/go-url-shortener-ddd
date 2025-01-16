@@ -4,7 +4,7 @@ go 1.22.9
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0
-	github.com/getsentry/sentry-go v0.30.0
+	github.com/getsentry/sentry-go v0.31.1
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/swagger v1.1.1
 	github.com/google/uuid v1.6.0
@@ -25,6 +25,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.33.0
 	go.opentelemetry.io/otel/trace v1.33.0
 	go.uber.org/automaxprocs v1.6.0
+	go.uber.org/mock v0.5.0
 	google.golang.org/grpc v1.69.4
 	google.golang.org/protobuf v1.36.2
 )

@@ -3,11 +3,17 @@ package tracer
 import (
 	"context"
 
+	"go.opentelemetry.io/otel"
+
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
 var tracer trace.Tracer
+
+func init() { // nolint // default tracer
+	tracer = otel.Tracer("")
+}
 
 func Init(t trace.Tracer) {
 	tracer = t

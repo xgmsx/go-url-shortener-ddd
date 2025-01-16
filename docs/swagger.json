@@ -75,7 +75,7 @@
                 "tags": [
                     "Links"
                 ],
-                "summary": "Get a short link by alias",
+                "summary": "Fetch a short link by alias",
                 "parameters": [
                     {
                         "type": "string",
@@ -89,7 +89,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.GetLinkOutput"
+                            "$ref": "#/definitions/dto.FetchLinkOutput"
                         }
                     },
                     "400": {
@@ -183,7 +183,7 @@
                 }
             }
         },
-        "dto.GetLinkOutput": {
+        "dto.FetchLinkOutput": {
             "type": "object",
             "properties": {
                 "alias": {

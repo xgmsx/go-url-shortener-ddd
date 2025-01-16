@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 
 service Shortener {
   rpc CreateLink(CreateLinkRequest) returns (CreateLinkResponse);
-  rpc GetLink(GetLinkRequest) returns (GetLinkResponse);
+  rpc FetchLink(FetchLinkRequest) returns (FetchLinkResponse);
 }
 
 message CreateLinkRequest {
@@ -22,11 +22,11 @@ message CreateLinkResponse {
   google.protobuf.Timestamp expired_at = 3;
 }
 
-message GetLinkRequest {
+message FetchLinkRequest {
   string alias = 1;
 }
 
-message GetLinkResponse {
+message FetchLinkResponse {
   string url = 1;
   string alias = 2;
   google.protobuf.Timestamp expired_at = 3;

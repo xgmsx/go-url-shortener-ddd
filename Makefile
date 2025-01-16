@@ -1,5 +1,43 @@
 export
 
+## Installation
+
+.PHONY: install
+install: ## Install development utils
+	@echo "* Running migrate-install..."
+	$(MAKE) migrate-install
+	@echo "* Running lint-install..."
+	$(MAKE) openapi-generate
+	@echo "* Running generate-install..."
+	$(MAKE) generate-install
+
+## Generation
+
+.PHONY: generate-install
+generate-install:
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
+
+.PHONY: proto-generate
+proto-generate:
+	protoc --go_out=proto/gen --go-grpc_out=proto/gen --proto_path=proto proto/shortener_v1.proto
+
+.PHONY: openapi-generate
+openapi-generate:
+	swag init --generalInfo ./pkg/http/server.go --parseInternal
+
+.PHONY: generate
+generate: ## Generate artifacts
+	@echo "* Running proto-generate..."
+	$(MAKE) proto-generate
+	@echo "* Running openapi-generate..."
+	$(MAKE) openapi-generate
+	@echo "* Running go generate..."
+	go generate ./...
+	$(MAKE) fmt
+
+
 ## Migrations
 
 DB_MIGRATE_URL = postgres://login:pass@localhost:5432/app-db?sslmode=disable
@@ -20,23 +58,6 @@ migrate-up:
 .PHONY: migrate-down
 migrate-down:
 	migrate -database "$(DB_MIGRATE_URL)" -path "$(MIGRATE_PATH)" down -all
-
-## Proto
-
-.PHONY: proto-install
-proto-install:
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-
-.PHONY: proto-generate
-proto-generate:
-	protoc --go_out=generated/protobuf --go-grpc_out=generated/protobuf --proto_path=proto proto/shortener_v1.proto
-
-## Openapi
-
-.PHONY: openapi-generate
-openapi-generate:
-	swag init --generalInfo ./pkg/http/server.go --parseInternal
 
 ## docker compose
 
@@ -78,13 +99,6 @@ run: ## 🚶 Run the program
 .PHONY: rune
 rune: ## 🔎 Run the program with escape analysis
 	go run -gcflags='-m=3' ./cmd/app
-
-.PHONY: generate
-generate: ## Generate artifacts
-	@echo "* Running proto-generate..."
-	$(MAKE) proto-generate
-	@echo "* Running openapi-generate..."
-	$(MAKE) openapi-generate
 
 ## Tests, tests, tests...
 

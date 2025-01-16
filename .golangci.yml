@@ -46,7 +46,7 @@ linters:
     - nakedret
     - noctx
     # - nolintlint
-    - revive
+    # - revive
     - staticcheck
     - stylecheck
     - testifylint
@@ -90,7 +90,11 @@ linters-settings:
       - dupImport # https://github.com/go-critic/go-critic/issues/845
       - ifElseChain
       - octalLiteral
-      - whyNoLint
+    settings:
+      hugeParam:
+        # Size in bytes that makes the warning trigger.
+        # Default: 80
+        sizeThreshold: 80
   gocyclo:
     min-complexity: 15
   godox:

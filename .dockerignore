@@ -2,7 +2,6 @@
 configs
 deployments
 migrations
-proto
 .gitignore
 .gitlab-ci.yml
 .golangci.yml
