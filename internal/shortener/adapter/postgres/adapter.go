@@ -24,7 +24,28 @@ func New(p *pgxpool.Pool) *Postgres {
 	}
 }
 
-func (p *Postgres) CreateLink(ctx context.Context, link entity.Link) error {
+func (p *Postgres) Tx(ctx context.Context, fn func(tx pgx.Tx) error) error {
+	ctx, span := tracer.Start(ctx, "postgres Tx")
+	defer span.End()
+
+	tx, err := p.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+
+	var txErr error
+	defer func() {
+		if txErr != nil {
+			_ = tx.Rollback(ctx)
+		} else {
+			txErr = tx.Commit(ctx)
+		}
+	}()
+
+	return fn(tx)
+}
+
+func (p *Postgres) CreateLink(ctx context.Context, tx pgx.Tx, link entity.Link) error {
 	ctx, span := tracer.Start(ctx, "postgres CreateLink")
 	defer span.End()
 
@@ -41,7 +62,7 @@ func (p *Postgres) CreateLink(ctx context.Context, link entity.Link) error {
 		return fmt.Errorf("dataset.ToSQL: %w", err)
 	}
 
-	_, err = p.pool.Exec(ctx, sql)
+	_, err = tx.Exec(ctx, sql)
 	if err != nil {
 		return fmt.Errorf("r.pool.Exec: %w", err)
 	}

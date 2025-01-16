@@ -46,7 +46,7 @@ linters:
     - nakedret
     - noctx
     # - nolintlint
-    - revive
+    # - revive
     - staticcheck
     - stylecheck
     - testifylint

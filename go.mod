@@ -5,6 +5,7 @@ go 1.22.9
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/getsentry/sentry-go v0.30.0
+	github.com/go-redis/redismock/v9 v9.2.0
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/swagger v1.1.1
 	github.com/google/uuid v1.6.0

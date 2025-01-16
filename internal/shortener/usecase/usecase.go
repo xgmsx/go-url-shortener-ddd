@@ -4,14 +4,17 @@ import (
 	"context"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
 )
 
 const linkTTL = 24 * time.Hour
 
 type Database interface {
-	CreateLink(ctx context.Context, l entity.Link) error
+	CreateLink(ctx context.Context, tx pgx.Tx, l entity.Link) error
 	GetLink(ctx context.Context, alias, url string) (entity.Link, error)
+	Tx(ctx context.Context, fn func(tx pgx.Tx) error) error
 }
 
 type Cache interface {

@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
 
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
@@ -36,19 +37,26 @@ func (u *UseCase) CreateLink(ctx context.Context, input dto.CreateLinkInput) (dt
 		ExpiredAt: time.Now().Add(linkTTL),
 	}
 
-	err = u.db.CreateLink(ctx, link)
-	if err != nil {
-		return output, fmt.Errorf("u.db.CreateLink: %w", err)
-	}
+	err = u.db.Tx(ctx, func(tx pgx.Tx) error {
+		err = u.db.CreateLink(ctx, tx, link)
+		if err != nil {
+			return fmt.Errorf("u.db.CreateLink: %w", err)
+		}
 
-	err = u.cache.PutLink(ctx, link)
-	if err != nil {
-		log.Error().Err(err).Msg("u.cache.PutLink")
-	}
+		err = u.cache.PutLink(ctx, link)
+		if err != nil {
+			return fmt.Errorf("u.cache.PutLink: %w", err)
+		}
 
-	err = u.broker.CreateEvent(ctx, link)
+		err = u.broker.CreateEvent(ctx, link)
+		if err != nil {
+			return fmt.Errorf("u.broker.CreateEvent: %w", err)
+		}
+
+		return nil
+	})
 	if err != nil {
-		log.Error().Err(err).Msg("u.broker.CreateEvent")
+		return output, fmt.Errorf("u.db.TX: %w", err)
 	}
 
 	return output.Load(link), nil

@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
@@ -24,14 +26,18 @@ func newFakeDatabase(storage []entity.Link) *fakeDatabase {
 	return &fakeDatabase{Storage: []entity.Link{}}
 }
 
-func (f *fakeDatabase) CreateLink(_ context.Context, l entity.Link) error {
+func (f *fakeDatabase) Tx(_ context.Context, fn func(tx pgx.Tx) error) error {
+	return fn(nil)
+}
+
+func (f *fakeDatabase) CreateLink(_ context.Context, tx pgx.Tx, l entity.Link) error {
 	if f.Err != nil {
 		return f.Err
 	}
 
 	for _, v := range f.Storage {
-		if v == l {
-			return nil
+		if v.URL == l.URL {
+			return entity.ErrAlreadyExist
 		}
 	}
 	f.Storage = append(f.Storage, l)

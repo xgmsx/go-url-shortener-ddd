@@ -11,15 +11,11 @@ import (
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
 	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/usecase"
-	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel"
 )
 
 func TestCreateLink(t *testing.T) {
 	ctx, stop := context.WithCancel(context.Background())
 	defer stop()
-
-	err := otel.Init(ctx, otel.Config{}, "test app", "0.0.0")
-	require.NoError(t, err)
 
 	tests := []struct {
 		name        string
@@ -46,11 +42,18 @@ func TestCreateLink(t *testing.T) {
 			expectedErr: true,
 		},
 		{
-			name:      "link created, but error occurred in cache and broker",
-			cacheErr:  fmt.Errorf("cache timeout"),
-			brokerErr: fmt.Errorf("broker timeout"),
-			input:     dto.CreateLinkInput{URL: "http://example.com"},
-			expected:  dto.CreateLinkOutput{URL: "http://example.com"},
+			name:        "link created, but error occurred in cache",
+			cacheErr:    fmt.Errorf("cache timeout"),
+			input:       dto.CreateLinkInput{URL: "http://example.com"},
+			expected:    dto.CreateLinkOutput{URL: "http://example.com"},
+			expectedErr: true,
+		},
+		{
+			name:        "link created, but error occurred in broker",
+			brokerErr:   fmt.Errorf("broker timeout"),
+			input:       dto.CreateLinkInput{URL: "http://example.com"},
+			expected:    dto.CreateLinkOutput{URL: "http://example.com"},
+			expectedErr: true,
 		},
 		{
 			name:        "error in database",
