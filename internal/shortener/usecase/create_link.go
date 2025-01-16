@@ -37,6 +37,7 @@ func (u *UseCase) CreateLink(ctx context.Context, input dto.CreateLinkInput) (dt
 		ExpiredAt: time.Now().Add(linkTTL),
 	}
 
+	// todo убрать транзакцию
 	err = u.db.Tx(ctx, func(tx pgx.Tx) error {
 		err = u.db.CreateLink(ctx, tx, link)
 		if err != nil {
