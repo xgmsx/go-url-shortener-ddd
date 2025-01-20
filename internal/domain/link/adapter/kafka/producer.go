@@ -1,4 +1,4 @@
-package kafka_producer //nolint:stylecheck
+package kafka
 
 import (
 	"context"
@@ -6,12 +6,20 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/entity"
 	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
-func (p *Producer) CreateEvent(ctx context.Context, l entity.Link) error {
-	ctx, span := tracer.Start(ctx, "kafka_producer UpdateEvent")
+type Producer struct {
+	writer *kafka.Writer
+}
+
+func New(writer *kafka.Writer) *Producer {
+	return &Producer{writer: writer}
+}
+
+func (p *Producer) SendLink(ctx context.Context, l entity.Link) error {
+	ctx, span := tracer.Start(ctx, "kafka SendLink")
 	defer span.End()
 
 	err := p.writer.WriteMessages(ctx, kafka.Message{

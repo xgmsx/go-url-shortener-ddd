@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"context"
 	"net"
 
 	"github.com/rs/zerolog/log"
@@ -9,7 +10,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-type Registrable interface {
+type registrable interface {
 	Register(s *grpc.Server)
 }
 
@@ -18,44 +19,33 @@ type Config struct {
 }
 
 type Server struct {
-	srv    *grpc.Server
-	config Config
-	notify chan error
+	srv *grpc.Server
 }
 
-func New(ch chan error, config Config, controllers ...Registrable) *Server {
-	s := &Server{
-		srv:    grpc.NewServer(),
-		config: config,
-		notify: ch,
+func New(controllers ...registrable) *Server {
+	srv := grpc.NewServer()
+
+	for _, c := range controllers {
+		c.Register(srv)
+	}
+	reflection.Register(srv)
+
+	return &Server{srv: srv}
+}
+
+func (s *Server) Serve(ctx context.Context, port string) error {
+	var lc net.ListenConfig
+
+	lis, err := lc.Listen(ctx, "tcp", ":"+port)
+	if err != nil {
+		return err
 	}
 
-	for _, controller := range controllers {
-		controller.Register(s.srv)
-	}
-	reflection.Register(s.srv)
-
-	go func() {
-		lis, err := net.Listen("tcp", ":"+config.Port)
-		if err != nil {
-			s.notify <- err
-			return
-		}
-		s.notify <- s.srv.Serve(lis)
-	}()
-
-	log.Info().Msg("gRPC server started on port: " + config.Port)
-
-	return s
+	log.Info().Msg("gRPC server started on port: " + port)
+	return s.srv.Serve(lis)
 }
 
 func (s *Server) Close() {
 	s.srv.GracefulStop()
 	log.Info().Msg("gRPC server closed")
-}
-
-func (s *Server) Notify(err error) {
-	if err != nil {
-		s.notify <- err
-	}
 }

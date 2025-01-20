@@ -187,7 +187,7 @@ $ grpcurl -d '{"url": "https://google.com"}' -plaintext localhost:50051 shortene
 
 Получение полной ссылки:
 ```shell
-$ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 shortener_v1.Shortener/GetLink
+$ grpcurl -d '{"alias": "IFIYr0OGRKeqF9jPUIbwww"}' -plaintext localhost:50051 shortener_v1.Shortener/FetchLink
 
 # {"url": "https://google.com", "alias": "IFIYr0OGRKeqF9jPUIbwww", "expired_at": "2025-01-02T12:00:00.000000000Z"}
 ```

@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Shortener_CreateLink_FullMethodName = "/shortener_v1.Shortener/CreateLink"
-	Shortener_GetLink_FullMethodName    = "/shortener_v1.Shortener/GetLink"
+	Shortener_FetchLink_FullMethodName  = "/shortener_v1.Shortener/FetchLink"
 )
 
 // ShortenerClient is the client API for Shortener service.
@@ -29,7 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ShortenerClient interface {
 	CreateLink(ctx context.Context, in *CreateLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error)
-	GetLink(ctx context.Context, in *GetLinkRequest, opts ...grpc.CallOption) (*GetLinkResponse, error)
+	FetchLink(ctx context.Context, in *FetchLinkRequest, opts ...grpc.CallOption) (*FetchLinkResponse, error)
 }
 
 type shortenerClient struct {
@@ -50,10 +50,10 @@ func (c *shortenerClient) CreateLink(ctx context.Context, in *CreateLinkRequest,
 	return out, nil
 }
 
-func (c *shortenerClient) GetLink(ctx context.Context, in *GetLinkRequest, opts ...grpc.CallOption) (*GetLinkResponse, error) {
+func (c *shortenerClient) FetchLink(ctx context.Context, in *FetchLinkRequest, opts ...grpc.CallOption) (*FetchLinkResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetLinkResponse)
-	err := c.cc.Invoke(ctx, Shortener_GetLink_FullMethodName, in, out, cOpts...)
+	out := new(FetchLinkResponse)
+	err := c.cc.Invoke(ctx, Shortener_FetchLink_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func (c *shortenerClient) GetLink(ctx context.Context, in *GetLinkRequest, opts 
 // for forward compatibility.
 type ShortenerServer interface {
 	CreateLink(context.Context, *CreateLinkRequest) (*CreateLinkResponse, error)
-	GetLink(context.Context, *GetLinkRequest) (*GetLinkResponse, error)
+	FetchLink(context.Context, *FetchLinkRequest) (*FetchLinkResponse, error)
 	mustEmbedUnimplementedShortenerServer()
 }
 
@@ -79,8 +79,8 @@ type UnimplementedShortenerServer struct{}
 func (UnimplementedShortenerServer) CreateLink(context.Context, *CreateLinkRequest) (*CreateLinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateLink not implemented")
 }
-func (UnimplementedShortenerServer) GetLink(context.Context, *GetLinkRequest) (*GetLinkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLink not implemented")
+func (UnimplementedShortenerServer) FetchLink(context.Context, *FetchLinkRequest) (*FetchLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchLink not implemented")
 }
 func (UnimplementedShortenerServer) mustEmbedUnimplementedShortenerServer() {}
 func (UnimplementedShortenerServer) testEmbeddedByValue()                   {}
@@ -121,20 +121,20 @@ func _Shortener_CreateLink_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Shortener_GetLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLinkRequest)
+func _Shortener_FetchLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).GetLink(ctx, in)
+		return srv.(ShortenerServer).FetchLink(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_GetLink_FullMethodName,
+		FullMethod: Shortener_FetchLink_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).GetLink(ctx, req.(*GetLinkRequest))
+		return srv.(ShortenerServer).FetchLink(ctx, req.(*FetchLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -151,8 +151,8 @@ var Shortener_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Shortener_CreateLink_Handler,
 		},
 		{
-			MethodName: "GetLink",
-			Handler:    _Shortener_GetLink_Handler,
+			MethodName: "FetchLink",
+			Handler:    _Shortener_FetchLink_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

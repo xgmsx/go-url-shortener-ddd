@@ -11,7 +11,7 @@ import (
 
 var tracer trace.Tracer
 
-func init() { // nolint:gochecknoinits
+func init() { // nolint // default tracer
 	tracer = otel.Tracer("")
 }
 

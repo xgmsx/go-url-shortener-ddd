@@ -4,21 +4,25 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/utils"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func RegisterAt(app fiber.Router, url string, handlers ...fiber.Handler) {
+var HandlerDefault = NewHandler()
+
+func NewHandler() fiber.Handler {
 	gatherer := prometheus.DefaultGatherer
 	if g, ok := registry.(prometheus.Gatherer); ok && g != gatherer {
 		gatherer = g
 	}
 
-	handlers = append(handlers, adaptor.HTTPHandler(promhttp.HandlerFor(gatherer, promhttp.HandlerOpts{})))
-	app.Get(url, handlers...)
+	return func(c *fiber.Ctx) error {
+		return adaptor.HTTPHandler(promhttp.HandlerFor(gatherer, promhttp.HandlerOpts{}))(c)
+	}
 }
 
 func New(config ...Config) fiber.Handler {

@@ -34,7 +34,7 @@ func TestMetricsMiddlewareWithLabels(t *testing.T) {
 	// Arrange
 	app := fiber.New()
 	app.Use(New(Config{ServiceName: "test service", Labels: map[string]string{"env": "preprod", "version": "1.0.0"}}))
-	RegisterAt(app, "/metrics")
+	app.Get("/metrics", NewHandler())
 	app.Get("/test", func(c *fiber.Ctx) error { return c.SendString("Test metrics") })
 
 	// Act
@@ -51,8 +51,7 @@ func TestMetricsMiddlewareWithNext(t *testing.T) {
 	// Arrange
 	app := fiber.New()
 	app.Use(New(Config{Next: func(c *fiber.Ctx) bool { return c.Path() == "/test2" }}))
-	RegisterAt(app, "/metrics")
-
+	app.Get("/metrics", NewHandler())
 	app.Get("/test1", func(c *fiber.Ctx) error { return c.SendString("Test 1") })
 	app.Get("/test2", func(c *fiber.Ctx) error { return c.SendString("Test 2") })
 
@@ -76,8 +75,7 @@ func TestMetricsMiddlewareWithSkipPath(t *testing.T) {
 
 	app := fiber.New()
 	app.Use(New(cfg))
-	RegisterAt(app, "/metrics")
-
+	app.Get("/metrics", NewHandler())
 	app.Get("/test1", func(c *fiber.Ctx) error { return c.SendString("Test 1") })
 	app.Get("/test2", func(c *fiber.Ctx) error { return c.SendString("Test 2") })
 
@@ -101,8 +99,7 @@ func TestMetricsMiddlewareWithBasicAuth(t *testing.T) {
 	app.Get("/test", func(c *fiber.Ctx) error { return c.SendString("Hello World") })
 
 	// Act
-	RegisterAt(app, "/metrics",
-		basicauth.New(basicauth.Config{Users: map[string]string{"login": "pass"}}))
+	app.Get("/metrics", basicauth.New(basicauth.Config{Users: map[string]string{"login": "pass"}}), NewHandler())
 
 	// Assert
 	resp, _ := app.Test(httptest.NewRequest("GET", "/test", http.NoBody), -1)
@@ -125,7 +122,7 @@ func TestMetricsMiddlewareWithError(t *testing.T) {
 	// Arrange
 	app := fiber.New()
 	app.Use(New())
-	RegisterAt(app, "/metrics")
+	app.Get("/metrics", NewHandler())
 
 	// Act
 	resp, _ := app.Test(httptest.NewRequest("POST", "/unknown", http.NoBody), -1)

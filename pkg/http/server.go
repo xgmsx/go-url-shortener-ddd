@@ -2,7 +2,10 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 	"github.com/rs/zerolog/log"
+
+	"github.com/xgmsx/go-url-shortener-ddd/pkg/http/middlewares/metrics"
 
 	"github.com/xgmsx/go-url-shortener-ddd/docs"
 )
@@ -16,6 +19,10 @@ type Config struct {
 	UsePprof     bool   `env:"HTTP_USE_PPROF, default=false"`
 }
 
+type registrable interface {
+	Register(s *fiber.App)
+}
+
 // Server HTTP.
 //
 // @version      0.0.0
@@ -25,10 +32,9 @@ type Server struct {
 	app     *fiber.App
 	options *Options
 	config  Config
-	notify  chan error
 }
 
-func New(ch chan error, config Config, options *Options) *Server {
+func New(config Config, options *Options, controllers ...registrable) *Server {
 	app := fiber.New(fiber.Config{
 		ErrorHandler:          DefaultErrorHandler,
 		AppName:               options.Name,
@@ -37,35 +43,34 @@ func New(ch chan error, config Config, options *Options) *Server {
 		DisableStartupMessage: true,
 	})
 
-	s := &Server{
-		app:     app,
-		config:  config,
-		options: options,
-		notify:  ch,
+	// middlewares
+	for _, m := range options.Middlewares {
+		app.Use(m)
 	}
+
+	// controllers
+	for _, c := range controllers {
+		c.Register(app)
+	}
+
+	app.Get("/live", func(c *fiber.Ctx) error { return c.SendStatus(fiber.StatusOK) })
+	app.Get("/ready", func(c *fiber.Ctx) error { return c.SendStatus(fiber.StatusOK) })
+	app.Get("/swagger/*", swagger.HandlerDefault)
+	app.Get("/metrics", metrics.HandlerDefault)
 
 	docs.SwaggerInfo.Title = options.Name
 	docs.SwaggerInfo.Version = config.AppVersion
 
-	// middlewares
-	for _, middleware := range options.Middlewares {
-		app.Use(middleware)
+	return &Server{
+		app:     app,
+		config:  config,
+		options: options,
 	}
+}
 
-	// routers
-	for _, r := range options.Routers {
-		for prefix, router := range r {
-			router.Register(prefix, app)
-		}
-	}
-
-	go func() {
-		s.Notify(s.app.Listen("0.0.0.0:" + config.Port))
-	}()
-
-	log.Info().Msg("HTTP server started on port: " + config.Port)
-
-	return s
+func (s *Server) Serve(port string) error {
+	log.Info().Msg("HTTP server started on port: " + port)
+	return s.app.Listen("0.0.0.0:" + port)
 }
 
 func (s *Server) Close() {
@@ -75,10 +80,4 @@ func (s *Server) Close() {
 	}
 
 	log.Info().Msg("HTTP server closed")
-}
-
-func (s *Server) Notify(err error) {
-	if err != nil {
-		s.notify <- err
-	}
 }

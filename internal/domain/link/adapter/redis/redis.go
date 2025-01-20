@@ -9,7 +9,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/entity"
 	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 

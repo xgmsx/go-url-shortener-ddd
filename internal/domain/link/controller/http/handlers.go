@@ -1,4 +1,4 @@
-package http_router //nolint:stylecheck
+package http
 
 import (
 	"errors"
@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
 
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/dto"
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/dto"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/entity"
 	_ "github.com/xgmsx/go-url-shortener-ddd/pkg/http"
 	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
@@ -25,7 +25,7 @@ import (
 // @Failure 404 {object} http.ErrHTTP
 // @Failure 500 {object} http.ErrHTTP
 // @Router /shortener/v1/link [post]
-func (r Router) createLink(c *fiber.Ctx) error {
+func (r *Router) createLink(c *fiber.Ctx) error {
 	ctx, span := tracer.Start(c.Context(), "http/v1 CreateLink")
 	defer span.End()
 
@@ -40,7 +40,7 @@ func (r Router) createLink(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "validate error")
 	}
 
-	output, err := r.uc.CreateLink(ctx, input)
+	output, err := r.ucCreate.Create(ctx, input)
 	if err != nil {
 		switch {
 		case errors.Is(err, entity.ErrAlreadyExist):
@@ -57,38 +57,38 @@ func (r Router) createLink(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(output)
 }
 
-// getLink handler
+// fetchLink handler
 //
-// @Summary Get a short link by alias
+// @Summary Fetch a short link by alias
 // @Tags Links
 // @Accept plain
 // @Produce json
 // @Param alias path string true "Link alias"
-// @Success 200 {object} dto.GetLinkOutput
+// @Success 200 {object} dto.FetchLinkOutput
 // @Failure 400 {object} http.ErrHTTP
 // @Failure 404 {object} http.ErrHTTP
 // @Failure 500 {object} http.ErrHTTP
 // @Router /shortener/v1/link/{alias} [get]
-func (r Router) getLink(c *fiber.Ctx) error {
-	ctx, span := tracer.Start(c.Context(), "http/v1 GetLink")
+func (r *Router) fetchLink(c *fiber.Ctx) error {
+	ctx, span := tracer.Start(c.Context(), "http/v1 FetchLink")
 	defer span.End()
 
 	alias := c.Params("alias")
 
-	input := dto.GetLinkInput{Alias: alias}
+	input := dto.FetchLinkInput{Alias: alias}
 	if err := input.Validate(); err != nil {
-		log.Error().Msg("uc.GetLink: alias is required")
+		log.Error().Msg("uc.FetchLink: alias is required")
 		return fiber.NewError(fiber.StatusBadRequest, "validate error")
 	}
 
-	output, err := r.uc.GetLink(ctx, input)
+	output, err := r.ucFetch.Fetch(ctx, input)
 	if err != nil {
 		switch {
 		case errors.Is(err, entity.ErrNotFound):
-			log.Error().Err(err).Msg("uc.GetLink: not found")
+			log.Error().Err(err).Msg("uc.FetchLink: not found")
 			return fiber.NewError(fiber.StatusNotFound, "not found")
 		default:
-			log.Error().Err(err).Msg("uc.GetLink: internal error")
+			log.Error().Err(err).Msg("uc.FetchLink: internal error")
 			return fiber.NewError(fiber.StatusInternalServerError, "internal error")
 		}
 	}
@@ -108,26 +108,26 @@ func (r Router) getLink(c *fiber.Ctx) error {
 // @Failure      404 {object} http.ErrHTTP
 // @Failure      500 {object} http.ErrHTTP
 // @Router       /shortener/v1/link/{alias}/redirect [get]
-func (r Router) redirect(c *fiber.Ctx) error {
+func (r *Router) redirect(c *fiber.Ctx) error {
 	ctx, span := tracer.Start(c.Context(), "http/v1 Redirect")
 	defer span.End()
 
 	alias := c.Params("alias")
 
-	input := dto.GetLinkInput{Alias: alias}
+	input := dto.FetchLinkInput{Alias: alias}
 	if err := input.Validate(); err != nil {
-		log.Error().Msg("uc.GetLink: alias is required")
+		log.Error().Msg("uc.FetchLink: alias is required")
 		return fiber.NewError(fiber.StatusBadRequest, "validate error")
 	}
 
-	output, err := r.uc.GetLink(ctx, input)
+	output, err := r.ucFetch.Fetch(ctx, input)
 	if err != nil {
 		switch {
 		case errors.Is(err, entity.ErrNotFound):
-			log.Error().Err(err).Msg("uc.GetLink: not found")
+			log.Error().Err(err).Msg("uc.FetchLink: not found")
 			return fiber.NewError(fiber.StatusNotFound, "not found")
 		default:
-			log.Error().Err(err).Msg("uc.GetLink: internal error")
+			log.Error().Err(err).Msg("uc.FetchLink: internal error")
 			return fiber.NewError(fiber.StatusInternalServerError, "internal error")
 		}
 	}

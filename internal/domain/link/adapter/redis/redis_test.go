@@ -10,8 +10,8 @@ import (
 	"github.com/go-redis/redismock/v9"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/adapter/redis"
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/adapter/redis"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/entity"
 )
 
 const ttl = time.Hour

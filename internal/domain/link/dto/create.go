@@ -7,7 +7,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/entity"
 )
 
 type CreateLinkInput struct {

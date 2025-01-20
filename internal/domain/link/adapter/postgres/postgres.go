@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/xgmsx/go-url-shortener-ddd/internal/shortener/entity"
+	"github.com/xgmsx/go-url-shortener-ddd/internal/domain/link/entity"
 	"github.com/xgmsx/go-url-shortener-ddd/pkg/observability/otel/tracer"
 )
 
@@ -24,28 +24,7 @@ func New(p *pgxpool.Pool) *Postgres {
 	}
 }
 
-func (p *Postgres) Tx(ctx context.Context, fn func(tx pgx.Tx) error) error {
-	ctx, span := tracer.Start(ctx, "postgres Tx")
-	defer span.End()
-
-	tx, err := p.pool.Begin(ctx)
-	if err != nil {
-		return err
-	}
-
-	var txErr error
-	defer func() {
-		if txErr != nil {
-			_ = tx.Rollback(ctx)
-		} else {
-			txErr = tx.Commit(ctx)
-		}
-	}()
-
-	return fn(tx)
-}
-
-func (p *Postgres) CreateLink(ctx context.Context, tx pgx.Tx, link entity.Link) error {
+func (p *Postgres) CreateLink(ctx context.Context, link entity.Link) error {
 	ctx, span := tracer.Start(ctx, "postgres CreateLink")
 	defer span.End()
 
@@ -62,7 +41,7 @@ func (p *Postgres) CreateLink(ctx context.Context, tx pgx.Tx, link entity.Link) 
 		return fmt.Errorf("dataset.ToSQL: %w", err)
 	}
 
-	_, err = tx.Exec(ctx, sql)
+	_, err = p.pool.Exec(ctx, sql)
 	if err != nil {
 		return fmt.Errorf("r.pool.Exec: %w", err)
 	}
@@ -70,8 +49,8 @@ func (p *Postgres) CreateLink(ctx context.Context, tx pgx.Tx, link entity.Link) 
 	return nil
 }
 
-func (p *Postgres) GetLink(ctx context.Context, alias, url string) (entity.Link, error) {
-	ctx, span := tracer.Start(ctx, "postgres GetLink")
+func (p *Postgres) FindLink(ctx context.Context, alias, url string) (entity.Link, error) {
+	ctx, span := tracer.Start(ctx, "postgres FindLink")
 	defer span.End()
 
 	var link entity.Link

@@ -83,7 +83,7 @@ const docTemplate = `{
                 "tags": [
                     "Links"
                 ],
-                "summary": "Get a short link by alias",
+                "summary": "Fetch a short link by alias",
                 "parameters": [
                     {
                         "type": "string",
@@ -97,7 +97,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.GetLinkOutput"
+                            "$ref": "#/definitions/dto.FetchLinkOutput"
                         }
                     },
                     "400": {
@@ -191,7 +191,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.GetLinkOutput": {
+        "dto.FetchLinkOutput": {
             "type": "object",
             "properties": {
                 "alias": {

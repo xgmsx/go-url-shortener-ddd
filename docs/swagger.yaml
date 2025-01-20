@@ -14,7 +14,7 @@ definitions:
       url:
         type: string
     type: object
-  dto.GetLinkOutput:
+  dto.FetchLinkOutput:
     properties:
       alias:
         type: string
@@ -86,7 +86,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetLinkOutput'
+            $ref: '#/definitions/dto.FetchLinkOutput'
         "400":
           description: Bad Request
           schema:
@@ -99,7 +99,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/http.ErrHTTP'
-      summary: Get a short link by alias
+      summary: Fetch a short link by alias
       tags:
       - Links
   /shortener/v1/link/{alias}/redirect:
