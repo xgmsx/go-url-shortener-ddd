@@ -47,14 +47,12 @@ func TestCreateLink(t *testing.T) {
 				publisher.EXPECT().SendLink(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
 		},
-
 		{
 			name:       "Invalid JSON",
 			input:      `test text`,
 			wantStatus: http.StatusBadRequest,
 			wantOutput: "invalid json",
 		},
-
 		{
 			name:       "JSON validation error",
 			input:      `{"test": "json"}`,
