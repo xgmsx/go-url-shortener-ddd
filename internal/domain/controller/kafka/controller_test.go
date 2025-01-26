@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
 	controllerKafka "github.com/xgmsx/go-url-shortener-ddd/internal/domain/controller/kafka"
@@ -72,7 +73,7 @@ func TestKafkaController(t *testing.T) {
 
 			// act
 			controller := controllerKafka.New(reader, ucCreate.New(database, cache, publisher))
-			go controller.Consume(ctx)
+			go func() { err := controller.Consume(ctx); assert.NoError(t, err) }()
 
 			<-time.After(time.Millisecond * 50)
 		})

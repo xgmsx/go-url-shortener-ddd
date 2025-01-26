@@ -2,7 +2,6 @@ package otel
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -31,7 +30,7 @@ type Config struct {
 
 var shutdownTracing func(ctx context.Context) error
 
-func Init(ctx context.Context, c Config, name, version string) error {
+func Init(ctx context.Context, c Config, name, version string) {
 	otel.SetTextMapPropagator(
 		propagation.NewCompositeTextMapPropagator(
 			propagation.TraceContext{},
@@ -47,20 +46,22 @@ func Init(ctx context.Context, c Config, name, version string) error {
 			otlptracegrpc.WithEndpoint(c.Endpoint),
 			otlptracegrpc.WithInsecure())
 		if err != nil {
-			return fmt.Errorf("failed to create OTLP trace exporter (GRPC): %w", err)
+			log.Error().Err(err).Msg("Tracer initialization failed")
+			return
 		}
 	case c.EndpointHTTP != "":
 		exporter, err = otlptracehttp.New(ctx,
 			otlptracehttp.WithEndpoint(c.EndpointHTTP),
 			otlptracehttp.WithInsecure())
 		if err != nil {
-			return fmt.Errorf("failed to create OTLP trace exporter (HTTP): %w", err)
+			log.Error().Err(err).Msg("Tracer initialization failed")
+			return
 		}
 	default:
 		otel.SetTracerProvider(tracer_noop.NewTracerProvider())
 		tracer.Init(otel.Tracer(""))
 		log.Info().Msg("Tracer is disabled")
-		return nil
+		return
 	}
 
 	traceProvider := trace.NewTracerProvider(
@@ -77,9 +78,7 @@ func Init(ctx context.Context, c Config, name, version string) error {
 	shutdownTracing = traceProvider.Shutdown
 	otel.SetTracerProvider(traceProvider)
 	tracer.Init(otel.Tracer("app"))
-
 	log.Info().Msg("Tracer initialized")
-	return nil
 }
 
 func Close() {
@@ -92,7 +91,7 @@ func Close() {
 
 	err := shutdownTracing(ctx)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to shutdown tracing")
+		log.Error().Err(err).Msg("Tracer shutdown failed")
 	}
 
 	log.Info().Msg("Tracer closed")

@@ -25,10 +25,13 @@ import (
 	redisClient "github.com/xgmsx/go-url-shortener-ddd/pkg/redis"
 )
 
-func Run(ctx context.Context, c *config.Config) error {
-	errCh := make(chan error)
-	defer close(errCh)
+type App struct{}
 
+func New() App {
+	return App{}
+}
+
+func (a App) Run(ctx context.Context, c *config.Config) error {
 	// init dependencies
 	postgres, err := postgresClient.New(ctx, &c.Postgres)
 	if err != nil {
@@ -64,6 +67,9 @@ func Run(ctx context.Context, c *config.Config) error {
 	ucFetchLink := usecaseFetch.New(database, cache)
 
 	// init controller
+	errCh := make(chan error)
+	defer close(errCh)
+
 	httpServer := http.New(c.HTTP, nil, controllerHTTP.New("/api/shortener", ucCreateLink, ucFetchLink))
 	go func() { errCh <- httpServer.Serve(c.HTTP.Port) }()
 	defer httpServer.Close()
@@ -73,12 +79,12 @@ func Run(ctx context.Context, c *config.Config) error {
 	defer grpcServer.Close()
 
 	kafkaConsumer := controllerKafka.New(KafkaReader, ucCreateLink)
-	go kafkaConsumer.Consume(ctx)
+	go func() { errCh <- kafkaConsumer.Consume(ctx) }()
 
-	return waiting(errCh)
+	return a.waiting(errCh)
 }
 
-func waiting(errCh <-chan error) error {
+func (a App) waiting(errCh <-chan error) error {
 	log.Info().Msg("App started")
 	defer log.Info().Msg("App stopping...")
 

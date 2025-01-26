@@ -38,11 +38,11 @@ type Config struct {
 	GRPC grpc.Config
 }
 
-func New() (*Config, error) {
-	var cfg Config
-	err := envconfig.Process(context.Background(), &cfg)
-	if err != nil {
-		return &cfg, err
-	}
-	return &cfg, nil
+func New() *Config {
+	return &Config{}
+}
+
+func (c *Config) Load(ctx context.Context) (*Config, error) {
+	err := envconfig.Process(ctx, c)
+	return c, err
 }

@@ -19,13 +19,12 @@ func New(k kafkaReader, uc create.Usecase) *Consumer {
 	return &Consumer{kafka: k, uc: uc}
 }
 
-func (c *Consumer) Consume(ctx context.Context) {
+func (c *Consumer) Consume(ctx context.Context) error {
 	log.Info().Msg("Kafka consumer started")
-
 	for {
 		select {
 		case <-ctx.Done():
-			return
+			return nil
 		default:
 			m, err := c.kafka.FetchMessage(ctx)
 			if err != nil {
@@ -34,7 +33,6 @@ func (c *Consumer) Consume(ctx context.Context) {
 			}
 
 			var input dto.CreateLinkInput
-
 			err = json.Unmarshal(m.Value, &input)
 			if err != nil {
 				log.Error().Err(err).Msg("json.Unmarshal")

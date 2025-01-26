@@ -16,10 +16,10 @@ type Config struct {
 	Debug            bool    `env:"SENTRY_DEBUG, default=false"`
 }
 
-func Init(c Config, name, version, env string) error {
+func Init(c Config, name, version, env string) {
 	if c.DSN == "" {
 		log.Info().Msg("Sentry is disabled")
-		return nil
+		return
 	}
 
 	err := sentry.Init(sentry.ClientOptions{
@@ -32,11 +32,11 @@ func Init(c Config, name, version, env string) error {
 		Environment:      env,
 	})
 	if err != nil {
-		return err
+		log.Error().Err(err).Msg("Sentry initialization failed")
+		return
 	}
 
 	log.Info().Msg("Sentry initialized")
-	return nil
 }
 
 func Close() {
