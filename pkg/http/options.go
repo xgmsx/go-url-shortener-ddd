@@ -29,7 +29,7 @@ type Options struct {
 }
 
 func defaultOptions(c Config, options ...*Options) *Options {
-	if options != nil {
+	if options != nil && options[0] != nil {
 		return options[0]
 	}
 
